@@ -671,6 +671,45 @@ RCT_EXPORT_METHOD(deleteContact:(NSDictionary *)contactData callback:(RCTRespons
     }
 }
 
+RCT_EXPORT_METHOD(getContactById:(NSString *)recordID callback:(RCTResponseSenderBlock)callback)
+{
+    
+    CNContactStore* contactStore = [self contactsStore:callback];
+    if(!contactStore)
+        return;
+    
+    NSError* contactError;
+    NSArray * keysToFetch =@[
+                             CNContactEmailAddressesKey,
+                             CNContactPhoneNumbersKey,
+                             CNContactFamilyNameKey,
+                             CNContactGivenNameKey,
+                             CNContactMiddleNameKey,
+                             CNContactPostalAddressesKey,
+                             CNContactOrganizationNameKey,
+                             CNContactJobTitleKey,
+                             CNContactImageDataAvailableKey,
+                             CNContactThumbnailImageDataKey,
+                             CNContactImageDataKey,
+                             CNContactNoteKey,
+                             CNContactUrlAddressesKey,
+                             CNContactBirthdayKey
+                             ];
+    
+    @try {
+        CNMutableContact* record = [[contactStore unifiedContactWithIdentifier:recordID keysToFetch:keysToFetch error:&contactError] mutableCopy];
+        
+        NSDictionary *contactDict = [self contactToDictionary: record withThumbnails:false];
+        
+        //NSLog(@"%@", contactDict);
+        
+        callback(@[[NSNull null], contactDict]);
+    }
+    @catch (NSException *exception) {
+        callback(@[[exception description], [NSNull null]]);
+    }
+}
+
 -(CNContactStore*) contactsStore: (RCTResponseSenderBlock)callback {
     if(!contactStore) {
         CNContactStore* store = [[CNContactStore alloc] init];
