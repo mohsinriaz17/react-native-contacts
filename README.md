@@ -114,6 +114,8 @@ The `READ_CONTACTS` permission is automatically added to `AndroidManifest.xml`, 
 ```xml
 ...
 <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+<uses-permission android:name="android.permission.READ_CONTACTS" />
+
 ...
 ```
 
@@ -122,6 +124,7 @@ Add `READ_PROFILE` and/or `WRITE_PROFILE` permissions to `AndroidManifest.xml`
 ```xml
 ...
 <uses-permission android:name="android.permission.READ_PROFILE" />
+<uses-permission android:name="android.permission.WRITE_PROFILE" />
 ...
 ```
 
@@ -136,6 +139,8 @@ Add `READ_PROFILE` and/or `WRITE_PROFILE` permissions to `AndroidManifest.xml`
  * `getContactsMatchingString` (string, callback) - where string is any string to match a name (first, middle, family) to
  * `checkPermission` (callback) - checks permission to access Contacts _ios only_
  * `requestPermission` (callback) - request permission to access Contacts _ios only_
+ * `getContactById` (string, callback) - where string is valid ID string and callback (str err, obj contact)
+ 
 
 Callbacks follow node-style:
 ```sh
