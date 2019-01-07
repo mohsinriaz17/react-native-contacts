@@ -63,6 +63,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
         getAllContacts(callback);
     }
 
+
+
     /**
      * Introduced for iOS compatibility.  Same as getAll
      *
@@ -94,6 +96,22 @@ public class ContactsManager extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
+    public void getContactById(final String recordId, final Callback callback) {
+
+        Context ctx = getReactApplicationContext();
+        try {
+            ContentResolver cr = ctx.getContentResolver();
+
+            ContactsProvider contactsProvider = new ContactsProvider(cr);
+            WritableMap updatedContact = contactsProvider.getContactById(recordId);
+
+            callback.invoke(null, updatedContact); // success
+
+        } catch (Exception e) {
+            callback.invoke(e.toString());
+        }
+    }
     /*
      * Returns all contacts matching string
      */
@@ -562,6 +580,12 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 .withValue(StructuredName.FAMILY_NAME, familyName)
                 .withValue(StructuredName.PREFIX, prefix)
                 .withValue(StructuredName.SUFFIX, suffix);
+        ops.add(op.build());
+
+        op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE, Note.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Note.NOTE, note);
         ops.add(op.build());
 
         op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
